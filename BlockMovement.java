@@ -1,6 +1,6 @@
 package tom.Tetris;
 
-import javax.swing.*;
+import javax.swing.JPanel;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +17,11 @@ public class BlockMovement
     }
 
 
+    /*
+    checks if shape is out of range of field;
+    checks if move is valid -> ...
+    creates new block if conditions are met;
+     */
     public synchronized void initiateMove(int dirH, int dirV) {
         for (int[] offset : current.bounds[current.rotation]) {
             if (outOfRange(current.position[0] + dirH + offset[0], current.position[1] + dirV + offset[1], 25)) {
@@ -29,6 +34,11 @@ public class BlockMovement
         else if (dirH == 0) newBlock();
     }
 
+
+    /*
+    compares 2 states of field;
+    if number of bits is different move is invalid;
+     */
     public boolean validateMove(int x, int y) {
         boolean[][] copyBlock;
         int compare1;
@@ -45,14 +55,16 @@ public class BlockMovement
         compare2 = countBoolean();
         block = copyBoolean(copyBlock);
 
-        repaint();
-
         current.positions = copyPositions;
         current.position = copyPosition;
 
         return compare1 == compare2;
     }
 
+
+    /*
+    rotates shape and validates rotation by similar means to initiateMove();
+     */
     public boolean checkRotation(int dir) {
         int rotation = current.rotation;
         current.rotation = Math.abs((current.rotation + dir) % 4);
@@ -68,10 +80,25 @@ public class BlockMovement
         if (check && !validateMove(0, 0)) check = false;
 
         current.rotation = rotation;
-
         return check;
     }
 
+
+    /*
+    sets or clears bits of Shape's positions in the array;
+    colors them if graphics = true;
+     */
+    public void moveOnArray(boolean set, boolean graphics) {
+        current.positions.forEach(position -> {
+            block[position[0]][position[1]] = set;
+            if (position[1] < 21 && graphics) grid[position[0]][position[1]].setVisible(set);
+        });
+    }
+
+    /*
+    clears Shape's "location" on array;
+    changes Shape's center's position -> sets Shape's location on array;
+     */
     public void paintShape(int dirH, int dirV, boolean graphics) {
         moveOnArray(false, graphics);
 
@@ -82,13 +109,6 @@ public class BlockMovement
         moveOnArray(true, graphics);
     }
 
-    public void repaint() {
-        for (int i = 0; i < 10; i++) {
-            for (int i2 = 0; i2 < 20; i2++) {
-                grid[i][i2].setVisible(block[i][i2]);
-            }
-        }
-    }
 
     public int countBoolean() {
         int c = 0;
@@ -106,18 +126,16 @@ public class BlockMovement
         return  copied;
     }
 
-    public void moveOnArray(boolean set, boolean graphics) {
-        current.positions.forEach(position -> {
-            block[position[0]][position[1]] = set;
-            if (position[1] < 21 && graphics) grid[position[0]][position[1]].setVisible(set);
-        });
-    }
 
+    /*
+    randomly generates a new block (should be changed with probability)
+     */
     public void newBlock() {
-        current = new Shape(blockTypes[(int) (Math.random() * 7)], this, new int[]{(int) (2 + Math.random() * 6), 21}, (int) (Math.random() * 4));
+        current = new Shape(blockTypes[(int) (Math.random() * 7)], this, new int[]{5, 21}, 0);
         current.updatePositions();
         paintShape(0, 0, false);
     }
+
 
     public boolean outOfRange(int x, int y, int height) {
         return x < 0 || x >= 10 || y < 0 || y >= height;

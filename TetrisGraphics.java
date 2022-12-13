@@ -3,7 +3,7 @@ package tom.Tetris;
 import javax.swing.*;
 import java.awt.*;
 
-public class GraphicComponents
+public class TetrisGraphics
 {
     JFrame frame = createFrame();
     JPanel[][] grid = getPanels(this.frame);

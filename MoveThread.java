@@ -2,6 +2,10 @@ package tom.Tetris;
 
 import java.util.concurrent.TimeUnit;
 
+/*
+speed * MILLISECOND;
+calls function that makes shapes fall;
+ */
 public class MoveThread extends Thread
 {
     BlockMovement blockMovement;
@@ -16,37 +20,12 @@ public class MoveThread extends Thread
 
     @Override
     public void run() {
-        while (true) {
+        while (Thread.currentThread().isAlive()) {
             try {
                 TimeUnit.MILLISECONDS.sleep(countThread.speed);
                 blockMovement.initiateMove(0, -1);
-            } catch (Exception e) {
-                System.out.println(e);
-            }
+            } catch (Exception ignored) {}
         }
     }
 }
 
-
-class CountThread extends Thread
-{
-    int speed;
-
-
-    public CountThread(int speed) {
-        this.speed = speed;
-        this.start();
-    }
-
-    @Override
-    public void run() {
-        while (true) {
-            try {
-                TimeUnit.MILLISECONDS.sleep(1000);
-                this.speed--;
-            } catch (Exception e) {
-                System.out.println("TimeUnit error");
-            }
-        }
-    }
-}

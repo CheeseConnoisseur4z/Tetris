@@ -5,14 +5,15 @@ import java.util.List;
 
 public class Shape
 {
-    int[][][] bounds = new int[4][4][2];
-    int rotation;
-    String type;
+    BlockMovement blockMovement;
 
+    int[][][] bounds = new int[4][4][2];
     int[] position;
     List<int[]> positions = new ArrayList<>();
+    int rotation;
 
-    BlockMovement blockMovement;
+    String type;
+
 
     public Shape(String type, BlockMovement blockMovement, int[] position, int rotation) {
         this.type = type;
@@ -45,6 +46,7 @@ public class Shape
         }
     }
 
+
     public void updatePositions() {
         positions.clear();
         for (int[] offset : bounds[rotation]) {
@@ -52,9 +54,6 @@ public class Shape
         }
     }
 
-    public int[] createPos(int x, int y) {
-        return new int[]{x, y};
-    }
 
     public int[][] getBounds(int[] pos1, int[] pos2, int[] pos3) {
         int[][] dirBounds = new int[4][2];
@@ -65,6 +64,10 @@ public class Shape
         return dirBounds;
     }
 
+    /*
+    creates base position;
+    rotates base position -> put into an array;
+     */
     public void createBounds(int[] pos1, int[] pos2, int[] pos3) {
         int[][] rotate = {{1, -1}, {-1, -1}, {-1, 1}};
         bounds[0] = getBounds(pos1, pos2, pos3);
@@ -76,5 +79,10 @@ public class Shape
                 c++;
             }
         }
+    }
+
+
+    public int[] createPos(int x, int y) {
+        return new int[]{x, y};
     }
 }

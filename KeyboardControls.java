@@ -8,23 +8,28 @@ import java.util.Set;
 public class KeyboardControls
 {
     BlockMovement blockMovement;
-    GraphicComponents graphicComponents;
+    TetrisGraphics tetrisGraphics;
     CountThread countThread;
 
     int saveSpeed;
     Set<Integer> keysDown = new HashSet<>();
 
-    public KeyboardControls(BlockMovement blockMovement, GraphicComponents graphicComponents, CountThread countThread) {
+
+    public KeyboardControls(BlockMovement blockMovement, TetrisGraphics tetrisGraphics, CountThread countThread) {
         this.blockMovement = blockMovement;
-        this.graphicComponents = graphicComponents;
+        this.tetrisGraphics = tetrisGraphics;
         this.countThread = countThread;
 
         addKeyPressed();
         addKeyReleased();
     }
 
+
+    /*
+    adds key to HashSet;
+     */
     public void addKeyPressed() {
-        this.graphicComponents.frame.addKeyListener(new KeyAdapter() {
+        this.tetrisGraphics.frame.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 keysDown.add(e.getKeyCode());
@@ -54,8 +59,11 @@ public class KeyboardControls
         });
     }
 
+    /*
+    removes key from HashSet;
+     */
     public void addKeyReleased() {
-        this.graphicComponents.frame.addKeyListener(new KeyAdapter() {
+        this.tetrisGraphics.frame.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
                 keysDown.remove(e.getKeyCode());
@@ -63,6 +71,7 @@ public class KeyboardControls
             }
         });
     }
+
 
     public void rotate(int dir) {
         if (blockMovement.current.type.equals("O")) return;
@@ -72,9 +81,11 @@ public class KeyboardControls
         }
     }
 
+
     public void moveHorizontal(int dir) {
-        blockMovement.moveHorizontal(dir);
+        blockMovement.initiateMove(dir, 0);
     }
+
 
     public void fastFall() {
         if (countThread.speed > 50) saveSpeed = countThread.speed;
