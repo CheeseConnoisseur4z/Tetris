@@ -29,10 +29,6 @@ public class BlockMovement
         else if (dirH == 0) newBlock();
     }
 
-    public void moveHorizontal(int dirH) {
-        initiateMove(dirH, 0);
-    }
-
     public boolean validateMove(int x, int y) {
         boolean[][] copyBlock;
         int compare1;
