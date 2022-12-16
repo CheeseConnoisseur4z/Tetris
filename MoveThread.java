@@ -10,11 +10,13 @@ public class MoveThread extends Thread
 {
     BlockMovement blockMovement;
     CountThread countThread;
+    TetrisGraphics tetrisGraphics;
 
 
-    public MoveThread(BlockMovement blockMovement, CountThread countThread) {
+    public MoveThread(BlockMovement blockMovement, CountThread countThread, TetrisGraphics tetrisGraphics) {
         this.blockMovement = blockMovement;
         this.countThread = countThread;
+        this.tetrisGraphics = tetrisGraphics;
         this.start();
     }
 
@@ -24,6 +26,8 @@ public class MoveThread extends Thread
             try {
                 TimeUnit.MILLISECONDS.sleep(countThread.speed);
                 blockMovement.initiateMove(0, -1);
+                tetrisGraphics.points.addAndGet(5);
+                tetrisGraphics.setPoints();
             } catch (Exception ignored) {}
         }
     }

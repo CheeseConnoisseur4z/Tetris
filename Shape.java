@@ -69,13 +69,12 @@ public class Shape
     rotates base position -> put into an array;
      */
     public void createBounds(int[] pos1, int[] pos2, int[] pos3) {
-        int[][] rotate = {{1, -1}, {-1, -1}, {-1, 1}};
         bounds[0] = getBounds(pos1, pos2, pos3);
         int c;
         for (int i = 1; i < 4; i++) {
             c = 0;
-            for (int[] point : bounds[0]) {
-                bounds[i][c] = new int[]{point[1] * rotate[i - 1][0], point[0] * rotate[i - 1][1]};
+            for (int[] point : bounds[i - 1]) {
+                bounds[i][c] = new int[]{point[1], -point[0]};
                 c++;
             }
         }

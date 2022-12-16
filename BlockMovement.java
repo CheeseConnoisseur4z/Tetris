@@ -10,9 +10,13 @@ public class BlockMovement
     JPanel[][] grid;
     Shape current;
     String[] blockTypes = {"T", "I", "O", "S", "Z", "L", "J"};
+    boolean endInstantFall = false;
 
-    public BlockMovement(JPanel[][] grid) {
-        this.grid = grid;
+    BlockReading blockReading;
+
+    public BlockMovement(TetrisGraphics tetrisGraphics) {
+        this.grid = tetrisGraphics.grid;
+        this.blockReading = new BlockReading(this, tetrisGraphics);
         newBlock();
     }
 
@@ -25,7 +29,7 @@ public class BlockMovement
     public synchronized void initiateMove(int dirH, int dirV) {
         for (int[] offset : current.bounds[current.rotation]) {
             if (outOfRange(current.position[0] + dirH + offset[0], current.position[1] + dirV + offset[1], 25)) {
-                if (dirH == 0 && dirV == -1) newBlock();
+                if (current.position[1] + offset[1] == 0) newBlock();
                 return;
             }
         }
@@ -39,7 +43,7 @@ public class BlockMovement
     compares 2 states of field;
     if number of bits is different move is invalid;
      */
-    public boolean validateMove(int x, int y) {
+    public synchronized boolean validateMove(int x, int y) {
         boolean[][] copyBlock;
         int compare1;
         int compare2;
@@ -47,13 +51,13 @@ public class BlockMovement
         List<int[]> copyPositions = new ArrayList<>(current.positions);
         int[] copyPosition = {current.position[0], current.position[1]};
 
-        copyBlock = copyBoolean(block);
-        compare1 = countBoolean();
+        copyBlock = blockReading.copyBoolean(block);
+        compare1 = blockReading.countBoolean();
 
         paintShape(x, y, false);
 
-        compare2 = countBoolean();
-        block = copyBoolean(copyBlock);
+        compare2 = blockReading.countBoolean();
+        block = blockReading.copyBoolean(copyBlock);
 
         current.positions = copyPositions;
         current.position = copyPosition;
@@ -63,11 +67,11 @@ public class BlockMovement
 
 
     /*
-    rotates shape and validates rotation by similar means to initiateMove();
+    rotates shape and validates current.rotation by similar means to initiateMove();
      */
-    public boolean checkRotation(int dir) {
-        int rotation = current.rotation;
-        current.rotation = Math.abs((current.rotation + dir) % 4);
+    public synchronized boolean checkRotation(int dir) {
+        int tempRotation = current.rotation;
+        current.rotation  = (4 - current.rotation + dir) % 4;
         boolean check = true;
 
         for (int[] offset : current.bounds[current.rotation]) {
@@ -79,7 +83,7 @@ public class BlockMovement
 
         if (check && !validateMove(0, 0)) check = false;
 
-        current.rotation = rotation;
+        current.rotation = (4 - tempRotation) % 4;
         return check;
     }
 
@@ -88,18 +92,19 @@ public class BlockMovement
     sets or clears bits of Shape's positions in the array;
     colors them if graphics = true;
      */
-    public void moveOnArray(boolean set, boolean graphics) {
+    public synchronized void moveOnArray(boolean set, boolean graphics) {
         current.positions.forEach(position -> {
             block[position[0]][position[1]] = set;
-            if (position[1] < 21 && graphics) grid[position[0]][position[1]].setVisible(set);
+            if (position[1] < 20 && graphics) grid[position[0]][position[1]].setVisible(set);
         });
     }
+
 
     /*
     clears Shape's "location" on array;
     changes Shape's center's position -> sets Shape's location on array;
      */
-    public void paintShape(int dirH, int dirV, boolean graphics) {
+    public synchronized void paintShape(int dirH, int dirV, boolean graphics) {
         moveOnArray(false, graphics);
 
         current.position[0] += dirH;
@@ -110,30 +115,13 @@ public class BlockMovement
     }
 
 
-    public int countBoolean() {
-        int c = 0;
-        for (boolean[] row : block) {
-            for (boolean bool : row) if (bool) {
-                c++;
-            }
-        }
-        return c;
-    }
-
-    public boolean[][] copyBoolean(boolean[][] toCopy) {
-        boolean[][] copied = new boolean[10][25];
-        for (int i = 0; i < 10; i++) System.arraycopy(toCopy[i], 0, copied[i], 0, 25);
-        return  copied;
-    }
-
-
-    /*
-    randomly generates a new block (should be changed with probability)
-     */
-    public void newBlock() {
-        current = new Shape(blockTypes[(int) (Math.random() * 7)], this, new int[]{5, 21}, 0);
+    public synchronized void newBlock() {
+        blockReading.checkGameOver();
+        current = new Shape(blockTypes[(int) (Math.random() * 7)], this, new int[]{5, 20}, 0);
         current.updatePositions();
+        blockReading.clearLines();
         paintShape(0, 0, false);
+        endInstantFall = true;
     }
 
 

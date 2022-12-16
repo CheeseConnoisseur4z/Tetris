@@ -52,6 +52,9 @@ public class KeyboardControls
                             case KeyEvent.VK_LEFT:
                                 rotate(-1);
                                 break;
+                            case KeyEvent.VK_SPACE:
+                                instantFall();
+                                break;
                         }
                     }
                 }
@@ -76,8 +79,17 @@ public class KeyboardControls
     public void rotate(int dir) {
         if (blockMovement.current.type.equals("O")) return;
         if (blockMovement.checkRotation(dir)) {
-            blockMovement.current.rotation = Math.abs((blockMovement.current.rotation + dir) % 4);
+            blockMovement.current.rotation = (4 - blockMovement.current.rotation + dir) % 4;
             blockMovement.paintShape(0, 0, true);
+        }
+    }
+
+
+    public void instantFall() {
+        if (!blockMovement.endInstantFall) return;
+        blockMovement.endInstantFall = false;
+        while (!blockMovement.endInstantFall) {
+            blockMovement.initiateMove(0, -1);
         }
     }
 
