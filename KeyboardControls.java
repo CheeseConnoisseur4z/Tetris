@@ -7,12 +7,11 @@ import java.util.Set;
 
 public class KeyboardControls
 {
-    BlockMovement blockMovement;
-    TetrisGraphics tetrisGraphics;
-    CountThread countThread;
-
-    int saveSpeed;
-    Set<Integer> keysDown = new HashSet<>();
+    private final BlockMovement blockMovement;
+    private final TetrisGraphics tetrisGraphics;
+    private final CountThread countThread;
+    private int saveSpeed;
+    private Set<Integer> keysDown = new HashSet<>();
 
 
     public KeyboardControls(BlockMovement blockMovement, TetrisGraphics tetrisGraphics, CountThread countThread) {
@@ -28,12 +27,11 @@ public class KeyboardControls
     /*
     adds key to HashSet;
      */
-    public void addKeyPressed() {
+    private void addKeyPressed() {
         this.tetrisGraphics.frame.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 keysDown.add(e.getKeyCode());
-
                 if (!keysDown.isEmpty()) {
                     for (Integer i : keysDown) {
                         switch (i) {
@@ -65,7 +63,7 @@ public class KeyboardControls
     /*
     removes key from HashSet;
      */
-    public void addKeyReleased() {
+    private void addKeyReleased() {
         this.tetrisGraphics.frame.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
@@ -76,7 +74,7 @@ public class KeyboardControls
     }
 
 
-    public void rotate(int dir) {
+    private void rotate(int dir) {
         if (blockMovement.current.type.equals("O")) return;
         if (blockMovement.checkRotation(dir)) {
             blockMovement.current.rotation = (4 - blockMovement.current.rotation + dir) % 4;
@@ -85,7 +83,7 @@ public class KeyboardControls
     }
 
 
-    public void instantFall() {
+    private void instantFall() {
         if (!blockMovement.endInstantFall) return;
         blockMovement.endInstantFall = false;
         while (!blockMovement.endInstantFall) {
@@ -94,17 +92,17 @@ public class KeyboardControls
     }
 
 
-    public void moveHorizontal(int dir) {
+    private void moveHorizontal(int dir) {
         blockMovement.initiateMove(dir, 0);
     }
 
 
-    public void fastFall() {
+    private void fastFall() {
         if (countThread.speed > 50) saveSpeed = countThread.speed;
         countThread.speed = 50;
     }
 
-    public void endFastFall() {
+    private void endFastFall() {
         countThread.speed = saveSpeed;
     }
 }

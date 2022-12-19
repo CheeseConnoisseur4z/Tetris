@@ -8,8 +8,9 @@ public class TetrisGraphics
 {
     JFrame frame;
     JPanel[][] grid;
-    JLabel pointsDisplay;
+    private JLabel pointsDisplay;
     AtomicInteger points = new AtomicInteger();
+
 
     public TetrisGraphics() {
         createFrame();
@@ -18,7 +19,7 @@ public class TetrisGraphics
     }
 
 
-    public void createFrame() {
+    private void createFrame() {
         frame = new JFrame("TETRIS");
         frame.setSize(365, 665);
         frame.setVisible(true);
@@ -29,7 +30,7 @@ public class TetrisGraphics
     }
 
 
-    public void createPointsDisplay() {
+    private void createPointsDisplay() {
         pointsDisplay = new JLabel();
         pointsDisplay.setBounds(0, 0, 400, 30);
         pointsDisplay.setFont(new Font("points display font", Font.BOLD, 30));
@@ -44,7 +45,7 @@ public class TetrisGraphics
     }
 
 
-    public void createGrid() {
+    private void createGrid() {
         JPanel border = new JPanel();
         border.setBounds(0, 30, 350, 650);
         border.setBackground(Color.black);

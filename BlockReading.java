@@ -5,8 +5,8 @@ import java.util.List;
 
 public class BlockReading
 {
-    BlockMovement blockMovement;
-    TetrisGraphics tetrisGraphics;
+    private final BlockMovement blockMovement;
+    private final TetrisGraphics tetrisGraphics;
 
     public BlockReading(BlockMovement blockMovement, TetrisGraphics tetrisGraphics) {
         this.blockMovement = blockMovement;
@@ -33,6 +33,7 @@ public class BlockReading
     public void clearLines() {
         int c;
         List<Integer> toClear = new ArrayList<>();
+
         for (int i = 19; i >= 0; i--) {
             c = 0;
             for (int i2 = 0; i2 < 10; i2++) {
@@ -40,6 +41,7 @@ public class BlockReading
             }
             if (c == 10) toClear.add(i);
         }
+
         toClear.forEach(this::shiftDown);
         toClear.forEach(ignored -> tetrisGraphics.points.addAndGet(25000));
         tetrisGraphics.setPoints();

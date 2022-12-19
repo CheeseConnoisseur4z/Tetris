@@ -6,13 +6,11 @@ import java.util.List;
 public class Shape
 {
     BlockMovement blockMovement;
-
     int[][][] bounds = new int[4][4][2];
     int[] position;
     List<int[]> positions = new ArrayList<>();
     int rotation;
-
-    String type;
+    final String type;
 
 
     public Shape(String type, BlockMovement blockMovement, int[] position, int rotation) {
@@ -68,7 +66,7 @@ public class Shape
     creates base position;
     rotates base position -> put into an array;
      */
-    public void createBounds(int[] pos1, int[] pos2, int[] pos3) {
+    private void createBounds(int[] pos1, int[] pos2, int[] pos3) {
         bounds[0] = getBounds(pos1, pos2, pos3);
         int c;
         for (int i = 1; i < 4; i++) {
@@ -81,7 +79,7 @@ public class Shape
     }
 
 
-    public int[] createPos(int x, int y) {
+    private int[] createPos(int x, int y) {
         return new int[]{x, y};
     }
 }

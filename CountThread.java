@@ -2,14 +2,10 @@ package tom.Tetris;
 
 import java.util.concurrent.TimeUnit;
 
-/*
-speed = 1 second;
-increases speed of MoveThread;
- */
 public class CountThread extends Thread
 {
-    int speed;
-    TetrisGraphics tetrisGraphics;
+    public int speed;
+    private final TetrisGraphics tetrisGraphics;
 
 
     public CountThread(int speed, TetrisGraphics  tetrisGraphics) {
@@ -26,8 +22,7 @@ public class CountThread extends Thread
                 tetrisGraphics.points.addAndGet(1000);
                 tetrisGraphics.setPoints();
                 this.speed -= 2;
-            } catch (Exception ignored) {
-            }
+            } catch (Exception ignored) {}
         }
     }
 }

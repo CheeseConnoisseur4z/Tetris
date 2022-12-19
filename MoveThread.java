@@ -2,15 +2,11 @@ package tom.Tetris;
 
 import java.util.concurrent.TimeUnit;
 
-/*
-speed * MILLISECOND;
-calls function that makes shapes fall;
- */
 public class MoveThread extends Thread
 {
-    BlockMovement blockMovement;
-    CountThread countThread;
-    TetrisGraphics tetrisGraphics;
+    private final BlockMovement blockMovement;
+    final CountThread countThread;
+    private final TetrisGraphics tetrisGraphics;
 
 
     public MoveThread(BlockMovement blockMovement, CountThread countThread, TetrisGraphics tetrisGraphics) {

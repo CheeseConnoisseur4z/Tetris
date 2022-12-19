@@ -7,19 +7,18 @@ import java.util.List;
 public class BlockMovement
 {
     boolean[][] block = new boolean[10][25];
-    JPanel[][] grid;
+    final JPanel[][] grid;
     Shape current;
-    String[] blockTypes = {"T", "I", "O", "S", "Z", "L", "J"};
+    private final String[] blockTypes = {"T", "I", "O", "S", "Z", "L", "J"};
     boolean endInstantFall = false;
-
     BlockReading blockReading;
+
 
     public BlockMovement(TetrisGraphics tetrisGraphics) {
         this.grid = tetrisGraphics.grid;
         this.blockReading = new BlockReading(this, tetrisGraphics);
         newBlock();
     }
-
 
     /*
     checks if shape is out of range of field;
@@ -28,7 +27,7 @@ public class BlockMovement
      */
     public synchronized void initiateMove(int dirH, int dirV) {
         for (int[] offset : current.bounds[current.rotation]) {
-            if (outOfRange(current.position[0] + dirH + offset[0], current.position[1] + dirV + offset[1], 25)) {
+            if (outOfRange(current.position[0] + dirH + offset[0], current.position[1] + dirV + offset[1])) {
                 if (current.position[1] + offset[1] == 0) newBlock();
                 return;
             }
@@ -43,7 +42,7 @@ public class BlockMovement
     compares 2 states of field;
     if number of bits is different move is invalid;
      */
-    public synchronized boolean validateMove(int x, int y) {
+    private synchronized boolean validateMove(int x, int y) {
         boolean[][] copyBlock;
         int compare1;
         int compare2;
@@ -75,7 +74,7 @@ public class BlockMovement
         boolean check = true;
 
         for (int[] offset : current.bounds[current.rotation]) {
-            if (outOfRange(current.position[0] + offset[0], current.position[1] + offset[1], 25)) {
+            if (outOfRange(current.position[0] + offset[0], current.position[1] + offset[1])) {
                 check = false;
                 break;
             }
@@ -92,7 +91,7 @@ public class BlockMovement
     sets or clears bits of Shape's positions in the array;
     colors them if graphics = true;
      */
-    public synchronized void moveOnArray(boolean set, boolean graphics) {
+    private synchronized void moveOnArray(boolean set, boolean graphics) {
         current.positions.forEach(position -> {
             block[position[0]][position[1]] = set;
             if (position[1] < 20 && graphics) grid[position[0]][position[1]].setVisible(set);
@@ -125,7 +124,7 @@ public class BlockMovement
     }
 
 
-    public boolean outOfRange(int x, int y, int height) {
-        return x < 0 || x >= 10 || y < 0 || y >= height;
+    private boolean outOfRange(int x, int y) {
+        return x < 0 || x >= 10 || y < 0 || y >= 25;
     }
 }
